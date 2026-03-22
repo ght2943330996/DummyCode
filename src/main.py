@@ -8,13 +8,13 @@ from embedding import EmbeddingRetriever
 from util import log_title
 
 
-# 获取当前工作目录
+# 获取工作根目录
 current_dir = Path(os.getcwd()).parent
 memory_file_path = current_dir / 'memory' / 'memory_like.jsonl'
 
 # 初始化MCP客户端
 fetch_mcp = MCPClient('fetch', 'uvx', ['mcp-server-fetch'])
-file_mcp = MCPClient('file', 'npx', ['-y', '@modelcontextprotocol/server-filesystem', str(current_dir)])
+file_mcp = MCPClient('file', 'npx', ['-y', '@modelcontextprotocol/server-filesystem', str(current_dir/'test')])
 memory_mcp = MCPClient('memory', 'npx', ['-y', '@modelcontextprotocol/server-memory'], {"MEMORY_FILE_PATH": str(memory_file_path)})
 
 
@@ -31,12 +31,12 @@ memory_mcp = MCPClient('memory', 'npx', ['-y', '@modelcontextprotocol/server-mem
 
 
 # 测试mcp服务，记忆功能
-async def main():
-    agent = Agent('deepseek-chat', [fetch_mcp, file_mcp, memory_mcp], '必须优先查询记忆回答问题,并更新记忆', '')
-    await agent.init()
-    tools = await agent.invoke("根据我的喜好，为我制定一个旅游计划，并保存在{current_dir}/test中")
-    print(tools)
-    await agent.close()
+# async def main():
+#     agent = Agent('deepseek-chat', [fetch_mcp, file_mcp, memory_mcp], '必须优先查询记忆回答问题,并更新记忆', '')
+#     await agent.init()
+#     tools = await agent.invoke("根据我的喜好，为我制定一个旅游计划，并保存在{current_dir}/test中")
+#     print(tools)
+#     await agent.close()
 
 
 # 测试llm+mcp
@@ -83,5 +83,67 @@ async def retrieve_context(prompt: str) -> str:
     return '\n'.join(item['document'] for item in context_results)
 
 
+#连续对话
+async def continuous_chat():
+    """连续对话模式 - 保持会话上下文，支持多轮对话"""
+    agent = Agent(
+        'deepseek-chat',
+        [fetch_mcp, file_mcp, memory_mcp],
+        '你是一个智能助手，可以查询和更新记忆。请优先查询用户的记忆信息来回答问题。',
+        ''
+    )
+
+    await agent.init()
+
+    print("\n" + "=" * 80)
+    print("提示：输入 'exit' 或 'quit' 退出对话")
+    print("提示：输入 'clear' 清空对话历史")
+    print("提示：输入 'history' 查看对话历史")
+    print("=" * 80 + "\n")
+
+    try:
+        while True:
+            # 获取用户输入
+            user_input = input("用户: ").strip()
+
+            # 处理特殊命令
+            if user_input.lower() in ['exit', 'quit', '退出']:
+                print("再见！")
+                break
+            elif user_input.lower() == 'clear':
+                agent.clear_conversation()
+                print("对话历史已清空")
+                continue
+            elif user_input.lower() == 'history':
+                history = agent.get_conversation_history()
+                log_title('对话历史')
+                for msg in history:
+                    role = msg.get('role', 'unknown')
+                    content = msg.get('content', '')
+                    if content:
+                        print(f"[{role}]: {content[:100]}..." if len(content) > 100 else f"[{role}]: {content}")
+                continue
+            elif not user_input:
+                continue
+
+            try:
+                response = await agent.invoke(user_input)
+                print("\n")
+            except Exception as e:
+                print(f"\n错误: {e}\n")
+
+    except KeyboardInterrupt:
+        print("\n\n对话被中断")
+    finally:
+        await agent.close()
+        print("连接已关闭")
+
+
+async def main():
+    await continuous_chat()
+
+
+
 if __name__ == '__main__':
     asyncio.run(main())
+

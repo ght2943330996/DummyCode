@@ -85,6 +85,24 @@ class Agent:
                 response = await self.llm.chat()
                 continue
 
-            # 没有工具调用,结束对话
-            await self.close()
+            # # 没有工具调用,结束对话
+            # await self.close()
+            # return response['content']
+
+
+            # 连续对话(不关闭连接，保持会话状态)
             return response['content']
+
+
+    #获取对话历史
+    def get_conversation_history(self) -> List[dict]:
+        if self.llm:
+            return self.llm.messages
+        return []
+    #清空对话历史（保留系统提示词）
+    def clear_conversation(self):
+        if self.llm:
+            system_messages = [msg for msg in self.llm.messages if msg.get('role') == 'system']
+            self.llm.messages = system_messages
+
+
