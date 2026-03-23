@@ -161,9 +161,27 @@ async def session_chat():
     print('=' * 80)
 
     # 启动时自动创建第一个会话
-    print('\n正在创建会话...')
-    await manager.create_session(name='默认会话')      #返回一个session
-    manager.print_help()   #通过实例调用方法时，Python 会自动将实例本身manager作为第一个参数传给方法
+    # print('\n正在创建会话...')
+    # await manager.create_session(name='默认会话')      #返回一个session
+    # manager.print_help()   #通过实例调用方法时，Python 会自动将实例本身manager作为第一个参数传给方法
+
+    # 启动时尝试从 index.json 恢复历史会话，否则创建默认会话
+    restored = manager.load_index()
+    if restored:
+        sessions = manager.list_sessions()
+        # print(f'\n历史会话：')
+        manager.print_sessions(sessions)
+
+        # 恢复后的当前会话处于懒初始化状态，在此立即连接 MCP
+        current = manager.current_session
+        if current and not current._initialized:
+            print(f'正在连接会话「{current.name}」...')
+            await current.init()
+    else:
+        print('\n无历史会话，正在创建默认会话...')
+        await manager.create_session(name='默认会话')
+
+    manager.print_help()
 
     try:  #捕获异常，ctrl+c退出循环
         while True:
@@ -284,7 +302,7 @@ async def session_chat():
         print('\n\n对话被中断')
     finally:
         await manager.close_all()
-        print('所有连接已关闭')
+        # print('所有连接已关闭')
 
 
 async def main():

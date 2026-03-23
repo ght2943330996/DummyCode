@@ -1,0 +1,32 @@
+{
+  "current_session_id": "session_20260323121844_3",
+  "sessions": [
+    {
+      "session_id": "session_20260323121207_1",
+      "name": "默认会话",
+      "model": "deepseek-chat",
+      "system_prompt": "你叫Dummy，是一个智能助手，拥有持久记忆能力。你必须严格遵守以下记忆规则：\n1. 【每次对话开始】调用 search_nodes 或 read_graph 查询与用户问题相关的已有记忆，优先基于记忆回答。\n2. 【每次对话结束前】将本轮对话中出现的重要信息（用户偏好、事实、计划、人名、结论等）用 create_entities 和 add_observations 存入知识图谱，用 create_relations 建立实体间关系。\n3. 若用户明确说\"不用记\"或信息无价值，则跳过存储。\n4. 存储时使用中文，实体名称简洁清晰。",
+      "created_at": "2026-03-23 12:12:07",
+      "memory_file": "E:\\work\\demo\\agent\\llm-mcp-rag-python\\memory\\sessions\\默认会话.jsonl",
+      "initialized": false
+    },
+    {
+      "session_id": "session_20260323121810_2",
+      "name": "study",
+      "model": "deepseek-chat",
+      "system_prompt": "你叫Dummy，是一个智能助手，拥有持久记忆能力。你必须严格遵守以下记忆规则：\n1. 【每次对话开始】调用 search_nodes 或 read_graph 查询与用户问题相关的已有记忆，优先基于记忆回答。\n2. 【每次对话结束前】将本轮对话中出现的重要信息（用户偏好、事实、计划、人名、结论等）用 create_entities 和 add_observations 存入知识图谱，用 create_relations 建立实体间关系。\n3. 若用户明确说\"不用记\"或信息无价值，则跳过存储。\n4. 存储时使用中文，实体名称简洁清晰。",
+      "created_at": "2026-03-23 12:18:10",
+      "memory_file": "E:\\work\\demo\\agent\\llm-mcp-rag-python\\memory\\sessions\\study.jsonl",
+      "initialized": false
+    },
+    {
+      "session_id": "session_20260323121844_3",
+      "name": "travel",
+      "model": "deepseek-chat",
+      "system_prompt": "你叫Dummy，是一个智能助手，拥有持久记忆能力。你必须严格遵守以下记忆规则：\n1. 【每次对话开始】调用 search_nodes 或 read_graph 查询与用户问题相关的已有记忆，优先基于记忆回答。\n2. 【每次对话结束前】将本轮对话中出现的重要信息（用户偏好、事实、计划、人名、结论等）用 create_entities 和 add_observations 存入知识图谱，用 create_relations 建立实体间关系。\n3. 若用户明确说\"不用记\"或信息无价值，则跳过存储。\n4. 存储时使用中文，实体名称简洁清晰。",
+      "created_at": "2026-03-23 12:18:44",
+      "memory_file": "E:\\work\\demo\\agent\\llm-mcp-rag-python\\memory\\sessions\\travel.jsonl",
+      "initialized": true
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{"type":"entity","name":"用户","entityType":"Person","observations":["非常喜欢雪山","需要旅游规划助手"]}
+{"type":"entity","name":"雪山旅游","entityType":"TravelCategory","observations":["用户的主要旅游兴趣","需要个性化规划"]}
+{"type":"entity","name":"海滩旅游","entityType":"TravelCategory","observations":["用户喜欢的旅游目的地类型"]}
+{"type":"entity","name":"运动","entityType":"Hobby","observations":["用户的兴趣爱好"]}
+{"type":"entity","name":"阅读","entityType":"Hobby","observations":["用户的兴趣爱好"]}
+{"type":"relation","from":"用户","to":"雪山旅游","relationType":"喜欢"}
+{"type":"relation","from":"用户","to":"海滩旅游","relationType":"喜欢"}
+{"type":"relation","from":"用户","to":"运动","relationType":"喜欢"}
+{"type":"relation","from":"用户","to":"阅读","relationType":"喜欢"}

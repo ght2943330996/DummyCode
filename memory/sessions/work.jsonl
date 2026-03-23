@@ -1,0 +1,5 @@
+{"type":"entity","name":"AI Agent研究","entityType":"研究领域","observations":["用户正在研究AI Agent方面的工作","需要每日计划设计","研究方向包括Agent架构、多Agent协作、工具使用等"]}
+{"type":"entity","name":"每日计划模板","entityType":"计划模板","observations":["包含上午理论学习、实验设计","下午开发实现、实验运行","晚间拓展学习","每日检查清单","重点研究方向建议"]}
+{"type":"entity","name":"用户身份询问","entityType":"对话记录","observations":["用户询问自己的身份背景","目前只知道用户在研究AI Agent","需要更多信息了解用户的职业身份"]}
+{"type":"relation","from":"每日计划模板","to":"AI Agent研究","relationType":"适用于"}
+{"type":"relation","from":"用户身份询问","to":"AI Agent研究","relationType":"涉及"}

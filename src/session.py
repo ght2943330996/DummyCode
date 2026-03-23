@@ -1,14 +1,5 @@
-"""
-会话管理模块 - 基于 Memory MCP 实现多对话管理
-
-功能：
-- 创建多个独立会话，每个会话有独立的知识图谱
-- 切换会话时自动切换对应的 Memory MCP
-- 支持列出所有会话
-- 支持删除会话
-"""
-
 import os
+import json
 from pathlib import Path
 from typing import Dict, List, Optional
 from datetime import datetime
@@ -21,6 +12,7 @@ from util import log_title
 # 工作根目录（src 的上一级）
 _ROOT_DIR = Path(os.getcwd()).parent
 _MEMORY_DIR = _ROOT_DIR / 'memory' / 'sessions'
+_INDEX_FILE = _ROOT_DIR / 'memory' / 'index.json'
 
 
 #单个会话，封装独立的 Agent 和专属 Memory MCP
@@ -74,14 +66,14 @@ class Session:
         if not self._initialized:
             await self.agent.init()
             self._initialized = True
-            log_title(f'会话已初始化: {self.name} [{self.session_id}]')
+            # log_title(f'会话已初始化: {self.name}')
 
     #关闭会话（断开 MCP 连接）
     async def close(self):
         if self._initialized:
             await self.agent.close()
             self._initialized = False
-            log_title(f'会话已关闭: {self.name} [{self.session_id}]')
+            # log_title(f'会话已关闭: {self.name}')
 
 
 
@@ -100,16 +92,54 @@ class Session:
         return self.agent.get_conversation_history()
 
 
-    #将会话信息转换为字典
+    #将会话信息转换为字典（用于持久化）
     def to_dict(self) -> dict:
         return {
             'session_id': self.session_id,
             'name': self.name,
             'model': self.model,
+            'system_prompt': self.system_prompt,
             'created_at': self.created_at,
             'memory_file': str(self.memory_file),
             'initialized': self._initialized,
         }
+
+    @classmethod
+    def from_dict(
+        cls,
+        data: dict,
+        extra_mcp_clients: Optional[List[MCPClient]] = None,
+        context: str = '',
+    ) -> 'Session':
+        # 从index.json中的元数据恢复创建会话实例（尚未连接 MCP）
+        session = cls.__new__(cls)
+        session.session_id = data['session_id']
+        session.name = data['name']
+        session.model = data.get('model', '')
+        session.system_prompt = data.get('system_prompt', '')
+        session.context = context
+        session.created_at = data.get('created_at', '')
+        session.extra_mcp_clients = extra_mcp_clients or []
+
+        _MEMORY_DIR.mkdir(parents=True, exist_ok=True)
+        session.memory_file = Path(data['memory_file'])
+
+        session.memory_mcp = MCPClient(
+            name=f'memory_{session.session_id}',
+            command='npx',
+            args=['-y', '@modelcontextprotocol/server-memory'],
+            env={'MEMORY_FILE_PATH': str(session.memory_file)},
+        )
+
+        all_mcp_clients = [session.memory_mcp] + session.extra_mcp_clients
+        session.agent = Agent(
+            model=session.model,
+            mcp_clients=all_mcp_clients,
+            system_prompt=session.system_prompt,
+            context=session.context,
+        )
+        session._initialized = False
+        return session
 
 
 #会话管理器，负责创建、切换、关闭会话
@@ -159,7 +189,7 @@ class SessionManager:
         if auto_switch:
             self._current_session_id = session_id
 
-        log_title(f'新会话已创建: {display_name} [{session_id}]')
+        log_title(f'新会话已创建: {display_name}')
         return session
 
 
@@ -167,6 +197,49 @@ class SessionManager:
         self._id_counter += 1
         ts = datetime.now().strftime('%Y%m%d%H%M%S')   #获取当前时间戳
         return f'session_{ts}_{self._id_counter}'
+
+
+    # 保存当前会话元素到 index.json
+    def save_index(self):
+        data = {
+            'current_session_id': self._current_session_id,
+            'sessions': [s.to_dict() for s in self._sessions.values()],
+        }
+        _INDEX_FILE.parent.mkdir(parents=True, exist_ok=True)
+        _INDEX_FILE.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding='utf-8')
+
+    #加载index.json中的会话元素
+    def load_index(self) -> bool:
+        if not _INDEX_FILE.exists():
+            return False
+        try:
+            data = json.loads(_INDEX_FILE.read_text(encoding='utf-8'))
+        except Exception as e:
+            print(f'[警告] 读取 index.json 失败，将忽略历史会话: {e}')
+            return False
+
+        sessions_data = data.get('sessions', [])
+        if not sessions_data:
+            return False
+
+        for s_data in sessions_data:
+            session = Session.from_dict(
+                s_data,
+                extra_mcp_clients=list(self.default_extra_mcp_clients),
+            )
+            self._sessions[session.session_id] = session
+
+        # 恢复上次的当前会话，若已不存在则取最后一个
+        saved_current = data.get('current_session_id')
+        if saved_current and saved_current in self._sessions:
+            self._current_session_id = saved_current
+        elif self._sessions:
+            self._current_session_id = list(self._sessions.keys())[-1]
+
+        # 同步计数器，避免 ID 冲突
+        self._id_counter = len(self._sessions)
+        log_title('历史会话')
+        return True
 
 
     #/help
@@ -220,7 +293,7 @@ class SessionManager:
             await session.init()
 
         self._current_session_id = session_id
-        log_title(f'已切换到会话: {session.name} [{session_id}]')
+        log_title(f'已切换到会话: {session.name}')
         return session
 
     #删除会话    默认保留memory文件
@@ -245,7 +318,7 @@ class SessionManager:
             else:
                 self._current_session_id = None
 
-        log_title(f'会话已删除: {session.name} [{session_id}]')
+        log_title(f'会话已删除: {session.name}')
 
 
     #@property装饰器，它将 current_session 方法伪装成一个属性，调用时不需要加括号，就像访问普通属性一样：self.current_session
