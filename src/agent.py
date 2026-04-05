@@ -40,6 +40,7 @@ class Agent:
             raise Exception('Agent 未初始化')
 
         response = await self.llm.chat(prompt)      #chat返回两个参数，content和toolCalls
+        # log_title('RESPONSE OVER')
 
         while True:
             if len(response['toolCalls']) > 0:    #是否需要使用工具

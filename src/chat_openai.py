@@ -95,7 +95,9 @@ class ChatOpenAI:
                 for call in tool_calls
             ] if tool_calls else None
         })
-
+        """
+        返回content和tool_calls，以便agent调用
+        """
         #返回上下文和工具调用，以便agent调用
         return {
             'content': content,

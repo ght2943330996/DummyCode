@@ -1,0 +1,111 @@
+{
+  "version": "1.0",
+  "embedding_model": "BAAI/bge-m3",
+  "files": {
+    "Claude_Opus_4.5.md": {
+      "path": "Claude_Opus_4.5.md",
+      "mtime": 1773479426.523601,
+      "size": 590,
+      "hash": "61837ba3e9f53442",
+      "chunk_count": 1
+    },
+    "DeepSeek_V3.2-Exp.md": {
+      "path": "DeepSeek_V3.2-Exp.md",
+      "mtime": 1773479455.7343156,
+      "size": 627,
+      "hash": "c5efadfca1c57bf0",
+      "chunk_count": 1
+    },
+    "Kimi_K2_Thinking.md": {
+      "path": "Kimi_K2_Thinking.md",
+      "mtime": 1773479497.1912155,
+      "size": 638,
+      "hash": "bb3997a86513f310",
+      "chunk_count": 1
+    },
+    "Qwen3.5-397B-A17B.md": {
+      "path": "Qwen3.5-397B-A17B.md",
+      "mtime": 1773479441.4679785,
+      "size": 629,
+      "hash": "6e042d98c105bf77",
+      "chunk_count": 1
+    },
+    "PrivateData.md": {
+      "path": "PrivateData.md",
+      "mtime": 1773480238.5821323,
+      "size": 181,
+      "hash": "f47d650b3574ea91",
+      "chunk_count": 1
+    },
+    "Gemini_3.0_Pro.md": {
+      "path": "Gemini_3.0_Pro.md",
+      "mtime": 1773479412.4076004,
+      "size": 630,
+      "hash": "9a5f706c8d84dc9f",
+      "chunk_count": 1
+    },
+    "GLM-4.5.md": {
+      "path": "GLM-4.5.md",
+      "mtime": 1773479483.1706238,
+      "size": 589,
+      "hash": "b6bfaba965f7f1a2",
+      "chunk_count": 1
+    },
+    "Llama_4_Behemoth_Instruct.md": {
+      "path": "Llama_4_Behemoth_Instruct.md",
+      "mtime": 1773479511.7920997,
+      "size": 669,
+      "hash": "aa9f2acda23fae73",
+      "chunk_count": 1
+    },
+    "OpenAI_o1.md": {
+      "path": "OpenAI_o1.md",
+      "mtime": 1773479398.4773693,
+      "size": 596,
+      "hash": "76d3aadaac2b0c82",
+      "chunk_count": 1
+    },
+    "GPT-4.5.md": {
+      "path": "GPT-4.5.md",
+      "mtime": 1773479469.1023924,
+      "size": 538,
+      "hash": "1ed793134bec8e68",
+      "chunk_count": 1
+    },
+    "GPT-4o.md": {
+      "path": "GPT-4o.md",
+      "mtime": 1773479525.2171545,
+      "size": 568,
+      "hash": "0208d0eef071ad60",
+      "chunk_count": 1
+    },
+    "旅游景点评论数据.xlsx": {
+      "path": "旅游景点评论数据.xlsx",
+      "mtime": 1775057656.2174275,
+      "size": 7096,
+      "hash": "ef315fa9b50e0d0e",
+      "chunk_count": 4
+    },
+    "大学生就业数据.csv": {
+      "path": "大学生就业数据.csv",
+      "mtime": 1775057552.6683633,
+      "size": 1394,
+      "hash": "eb581f3dd7402d81",
+      "chunk_count": 3
+    },
+    "个人信息数据.pdf": {
+      "path": "个人信息数据.pdf",
+      "mtime": 1775054827.3660288,
+      "size": 4766,
+      "hash": "f47e1592d01ad176",
+      "chunk_count": 3
+    },
+    "演唱会信息.csv": {
+      "path": "演唱会信息.csv",
+      "mtime": 1775053802.385595,
+      "size": 3964042,
+      "hash": "9ae6e2f94fcf67f2",
+      "chunk_count": 6667
+    }
+  }
+}

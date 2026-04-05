@@ -35,3 +35,4 @@ class VectorStore:
         norm_a = math.sqrt(sum(a * a for a in v1))
         norm_b = math.sqrt(sum(b * b for b in v2))
         return dot_product / (norm_a * norm_b)
+

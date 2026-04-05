@@ -5,7 +5,7 @@ from pathlib import Path
 from mcp_client import MCPClient
 from agent import Agent
 from read_doc import DocumentReader
-from embedding import EmbeddingRetriever
+from embedding_faiss import FAISSRetriever as EmbeddingRetriever
 from util import log_title, print_welcome
 from session import SessionManager
 
@@ -68,20 +68,24 @@ memory_mcp = MCPClient('memory', 'npx', ['-y', '@modelcontextprotocol/server-mem
 #     await agent.close()
 
 
-# RAG检索
+# RAG检索（使用 FAISS 持久化向量存储）
 async def retrieve_context(prompt: str) -> List[Dict]:
-    embedding_retriever = EmbeddingRetriever("BAAI/bge-m3")     #嵌入模型名称
     knowledge_dir = Path(current_dir) / 'knowledge'         #RAG知识库目录
 
-    files = list(knowledge_dir.iterdir())
-    for file in files:
-        if file.is_file():
-            content = doc_reader.read_knowledge_file(file)
-            await embedding_retriever.embed_document(content)
+    # 初始化 FAISS 检索器（自动加载缓存或执行向量化）
+    embedding_retriever = EmbeddingRetriever(
+        embedding_model="BAAI/bge-m3",
+        knowledge_dir=knowledge_dir
+    )
+    await embedding_retriever.initialize()
 
+    # 执行检索
     context_results = await embedding_retriever.retrieve(prompt)
     log_title('RAG检索结果')
-    print(context_results)
+    for i, result in enumerate(context_results, 1):
+        source = result.get('source_file', '未知')
+        print(f"[{i}] 相关度: {result['score']:.4f} | 来源: {source}")
+        print(f"    {result['document'][:100]}...")
 
     return context_results
 
