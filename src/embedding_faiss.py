@@ -180,7 +180,7 @@ class FAISSRetriever:
             self.stats["processed_files"] += 1
             self.stats["total_chunks"] += len(chunks)
 
-            print(f"  └─ 生成 {len(chunks)} 个切片")
+            # print(f"  └─ 生成 {len(chunks)} 个切片")
 
         except Exception as e:
             print(f"  └─ [错误] {e}")

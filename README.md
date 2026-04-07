@@ -114,13 +114,19 @@ python main.py
 - 基于文档内容回答问题
 - 需要精确引用知识库信息的场景
 
+### Docker 部署
+
+- **Dockerhub地址**: [ght2943330996/agent_1.0](https://hub.docker.com/repository/docker/ght2943330996/agent_1.0)
+- **挂载要求**：挂载API密钥文件.env 到容器的/app/.env目录
+- **运行方式**: docker run -it -p 8000:8000 -v [.env文件路径]:/app/.env agent_1.0
+
 ## 技术参考
 
 - [Model Context Protocol (MCP) 文档](https://modelcontextprotocol.io/docs)
 - [OpenAI API 文档](https://platform.openai.com/docs)
 - [DeepSeek API 文档](https://platform.deepseek.com/)
 - [SiliconFlow 文档](https://docs.siliconflow.cn/)
-
-## 项目参考
-
-KelvinQiu802:https://github.com/KelvinQiu802/llm-mcp-rag
+- [FAISS 文档](https://github.com/facebookresearch/faiss)
+- [MCP参考项目](https://github.com/KelvinQiu802/llm-mcp-rag)
+- [增强RAG参考文档](https://my.feishu.cn/wiki/ADkHwYg3Vi495Sk8mKOcBd2knbc?from=from_copylink)
+- [RAG 论文](https://arxiv.org/abs/2312.10997)

@@ -306,7 +306,6 @@ async def session_chat():
                             prompt=user_input,
                             model=manager.model,
                         )
-                        print(f'\n{answer}\n')
                     except Exception as e:
                         print(f'\nRAG 错误: {e}\n')
                 else:
